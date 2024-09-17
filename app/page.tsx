@@ -1,95 +1,99 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./page.module.css";
+import { useState } from "react";
+
+function TickerTable() {
+  return (
+    <table className="table">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Most Recent Price</th>
+          <th>Compared to Yesterday</th>
+        </tr>
+      </thead>
+    </table>
+  );
+}
+
+function Ticker() {
+  return (
+    <div>
+      <p>Ticker</p>
+    </div>
+  );
+}
+
+function Portfolio({ portfolio }) {
+  const [tickers, setTickers] = useState<string[]>([]);
+  return (
+    <div className="card">
+      <div className="card-content">
+        <div className="content">
+          <p className="subtitle">{portfolio}</p>
+          <TickerTable />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PortfolioList() {
+  const [portfolios, setPortfolios] = useState<string[]>([]);
+  const [newPortfolioName, setNewPortfolioName] = useState<string>("");
+
+  const handleAddPortfolio = () => {
+    if (newPortfolioName.trim() !== "") {
+      setPortfolios([...portfolios, newPortfolioName]);
+      setNewPortfolioName("");
+    }
+  };
+
+  return (
+    <div>
+      <nav className="level">
+        <div className="level-left">
+          <div className="level-item">
+            <h1 className="title">Silvia Pan's Portfolios</h1>
+          </div>
+        </div>
+        <div className="level-right">
+          <div className="level-item">
+            <input
+              className="input"
+              type="text"
+              placeholder="Add new portfolio to the dashboard"
+              value={newPortfolioName}
+              onChange={(e) => setNewPortfolioName(e.target.value)}
+            ></input>
+          </div>
+          <div className="level-item">
+            <button className="button is-link" onClick={handleAddPortfolio}>
+              Add Portfolio
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {portfolios && portfolios.length && (
+        <div className="columns is-flex-wrap-wrap">
+          {portfolios.map((portfolio) => (
+            <div className="column is-one-third">
+              <Portfolio portfolio={portfolio} />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Home() {
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <PortfolioList />
     </div>
   );
 }
