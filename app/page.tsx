@@ -2,38 +2,70 @@
 
 import Image from "next/image";
 import styles from "./page.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchTicker } from "./services/polygon-api";
 
-function TickerTable() {
+function Ticker({ stockData }) {
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>Ticker</th>
-          <th>Most Recent Price</th>
-          <th>Compared to Yesterday</th>
-        </tr>
-      </thead>
-    </table>
+    <div>
+      <p>{stockData.name}</p>
+    </div>
   );
 }
 
-function Ticker() {
+function TickerList() {
+  const [tickers, setTicker] = useState<string[]>([]);
+  const [stockData, setStockData] = useState<{ [key: string]: any }>({});
+  const [newTicker, setNewTicker] = useState<string>("");
+
+  async function handleAddTicker() {
+    try {
+      const tickerData = await fetchTicker({ ticker: newTicker });
+      const tickerJson = await tickerData.json();
+      if (tickerJson.results) {
+        setTicker([...tickers, newTicker]);
+        setStockData({ ...stockData, [newTicker]: tickerJson.results });
+      }
+    } catch (err) {
+      console.error("Failed to fetch stock data", err);
+    }
+  }
+
   return (
     <div>
-      <p>Ticker</p>
+      {tickers.length > 0 &&
+        tickers.map((ticker) => {
+          return <Ticker stockData={stockData[ticker]} />;
+        })}
+      <nav className="level">
+        <div className="level-right">
+          <div className="level-item">
+            <input
+              className="input"
+              type="text"
+              placeholder="Add new ticker to the portfolio"
+              value={newTicker}
+              onChange={(e) => setNewTicker(e.target.value.toUpperCase())}
+            ></input>
+          </div>
+          <div className="level-item">
+            <button className="button is-link" onClick={handleAddTicker}>
+              Add Portfolio
+            </button>
+          </div>
+        </div>
+      </nav>
     </div>
   );
 }
 
 function Portfolio({ portfolio }) {
-  const [tickers, setTickers] = useState<string[]>([]);
   return (
     <div className="card">
       <div className="card-content">
         <div className="content">
           <p className="subtitle">{portfolio}</p>
-          <TickerTable />
+          <TickerList />
         </div>
       </div>
     </div>
@@ -77,13 +109,20 @@ function PortfolioList() {
         </div>
       </nav>
 
-      {portfolios && portfolios.length && (
+      {portfolios && portfolios.length ? (
         <div className="columns is-flex-wrap-wrap">
           {portfolios.map((portfolio) => (
-            <div className="column is-one-third">
+            <div className="column is-one-half" key={portfolio}>
               <Portfolio portfolio={portfolio} />
             </div>
           ))}
+        </div>
+      ) : (
+        <div className="notification">
+          <p>
+            There are currently no portfolios. Add a new porfolitio to start
+            organizing your stocks.
+          </p>
         </div>
       )}
     </div>
