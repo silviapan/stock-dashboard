@@ -7,8 +7,10 @@ import { fetchTicker } from "./services/polygon-api";
 
 function Ticker({ stockData }) {
   return (
-    <div>
-      <p>{stockData.name}</p>
+    <div className="columns">
+      <div className="column">
+        <p>{stockData.name}</p>
+      </div>
     </div>
   );
 }
@@ -25,17 +27,37 @@ function TickerList() {
       if (tickerJson.results) {
         setTicker([...tickers, newTicker]);
         setStockData({ ...stockData, [newTicker]: tickerJson.results });
+        setNewTicker("");
       }
     } catch (err) {
       console.error("Failed to fetch stock data", err);
     }
   }
 
+  function handleRemoveTicker(selectedTicker: string) {
+    setTicker(tickers.filter((t) => t !== selectedTicker));
+    setStockData((data) => {
+      const copy = { ...data };
+      delete copy[selectedTicker];
+      return copy;
+    });
+  }
+
   return (
     <div>
       {tickers.length > 0 &&
         tickers.map((ticker) => {
-          return <Ticker stockData={stockData[ticker]} />;
+          return (
+            <>
+              <Ticker stockData={stockData[ticker]} key={ticker} />
+              <button
+                className="button"
+                onClick={() => handleRemoveTicker(ticker)}
+              >
+                Remove Stock
+              </button>
+            </>
+          );
         })}
       <nav className="level">
         <div className="level-right">
@@ -50,7 +72,7 @@ function TickerList() {
           </div>
           <div className="level-item">
             <button className="button is-link" onClick={handleAddTicker}>
-              Add Portfolio
+              Add Stock
             </button>
           </div>
         </div>
