@@ -7,7 +7,6 @@ import { fetchTicker } from "./services/polygon-api";
 import { Button } from "./components/button";
 
 function Ticker({ stockData, handleRemoveTicker }) {
-  console.log("handleRemove", handleRemoveTicker);
   return (
     <div className="columns">
       <div className="column">
