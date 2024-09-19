@@ -4,12 +4,21 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { useState, useEffect } from "react";
 import { fetchTicker } from "./services/polygon-api";
+import { Button } from "./components/button";
 
-function Ticker({ stockData }) {
+function Ticker({ stockData, handleRemoveTicker }) {
+  console.log("handleRemove", handleRemoveTicker);
   return (
     <div className="columns">
       <div className="column">
         <p>{stockData.name}</p>
+      </div>
+      <div className="column">
+        <Button
+          icon="delete"
+          buttonText="Remove"
+          handleClick={handleRemoveTicker}
+        />
       </div>
     </div>
   );
@@ -49,13 +58,11 @@ function TickerList() {
         tickers.map((ticker) => {
           return (
             <>
-              <Ticker stockData={stockData[ticker]} key={ticker} />
-              <button
-                className="button"
-                onClick={() => handleRemoveTicker(ticker)}
-              >
-                Remove Stock
-              </button>
+              <Ticker
+                key={ticker}
+                stockData={stockData[ticker]}
+                handleRemoveTicker={() => handleRemoveTicker(ticker)}
+              />
             </>
           );
         })}
@@ -71,9 +78,7 @@ function TickerList() {
             ></input>
           </div>
           <div className="level-item">
-            <button className="button is-link" onClick={handleAddTicker}>
-              Add Stock
-            </button>
+            <Button buttonText="Add Stock" handleClick={handleAddTicker} />
           </div>
         </div>
       </nav>
@@ -124,9 +129,11 @@ function PortfolioList() {
             ></input>
           </div>
           <div className="level-item">
-            <button className="button is-link" onClick={handleAddPortfolio}>
-              Add Portfolio
-            </button>
+            <Button
+              icon="add"
+              buttonText="Add Portfolio"
+              handleClick={handleAddPortfolio}
+            />
           </div>
         </div>
       </nav>
@@ -134,7 +141,7 @@ function PortfolioList() {
       {portfolios && portfolios.length ? (
         <div className="columns is-flex-wrap-wrap">
           {portfolios.map((portfolio) => (
-            <div className="column is-one-half" key={portfolio}>
+            <div className="column is-half" key={portfolio}>
               <Portfolio portfolio={portfolio} />
             </div>
           ))}
