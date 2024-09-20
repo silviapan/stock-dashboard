@@ -10,11 +10,14 @@ import { LabeledText } from "./components/text";
 function Ticker({ stockData, handleRemoveTicker }) {
   const currentPrice = stockData.snapshot.day.c;
   const yesterdayClose = stockData.snapshot.prevDay.c;
-  const percentageChange =
-    ((yesterdayClose - currentPrice) / yesterdayClose) * 100;
-  const percentageChangeDisplay = `${
-    percentageChange > 0 ? "+" : ""
-  }${percentageChange.toFixed(2)}%`;
+  const todayChange = stockData.snapshot.todaysChange;
+  const todayChangePercent = stockData.snapshot.todaysChangePerc;
+
+  const todayLow = stockData.snapshot.day.l;
+  const todayHigh = stockData.snapshot.day.h;
+  const todayRange = `${formatIntoCurrency(todayLow)} - ${formatIntoCurrency(
+    todayHigh
+  )}`;
 
   function formatIntoCurrency(num: number) {
     return num.toLocaleString("en-US", {
@@ -23,13 +26,42 @@ function Ticker({ stockData, handleRemoveTicker }) {
     });
   }
 
+  function formatIntoPercentDisplay(num: number) {
+    return `${num.toFixed(2)}%`;
+  }
+
+  const todayChangePositive = todayChange >= 0;
+
   return (
     <div className="py-3" style={{ borderTop: "1px solid lightgrey" }}>
-      <p>
-        <span>{stockData.name}</span>
-        <span>{stockData.snapshot.todaysChange}</span>
-        <span>{stockData.snapshot.todaysChangePerc}</span>
-      </p>
+      <nav className="level mb-3">
+        <div className="level-left">
+          <span>{stockData.name}</span>
+          <span
+            className={`tag is-medium is-light ${
+              todayChangePositive ? "is-success" : "is-danger"
+            }`}
+          >
+            {formatIntoPercentDisplay(todayChangePercent)}
+          </span>
+          <span
+            className={`${
+              todayChangePositive ? "has-text-success" : "has-text-danger"
+            }`}
+          >
+            {formatIntoCurrency(todayChange)}
+          </span>
+        </div>
+        <div className="level-right">
+          <Button
+            icon="delete"
+            buttonText=""
+            handleClick={handleRemoveTicker}
+            buttonStyleClasses={["is-small", "is-rounded"]}
+          />
+        </div>
+      </nav>
+
       <div className="columns">
         <div className="column">
           <LabeledText label="Symbol" text={stockData.ticker} />
@@ -47,26 +79,7 @@ function Ticker({ stockData, handleRemoveTicker }) {
           />
         </div>
         <div className="column">
-          <LabeledText
-            label="Today's Change"
-            text={percentageChangeDisplay}
-            textStyleClasses={[
-              percentageChange > 0 ? "has-text-success" : "has-text-danger",
-            ]}
-          />
-        </div>
-        <div className="column">
-          <Button
-            icon="delete"
-            buttonText=""
-            handleClick={handleRemoveTicker}
-            buttonStyleClasses={[
-              "is-small",
-              "is-rounded",
-              "is-danger",
-              "is-light",
-            ]}
-          />
+          <LabeledText label="Day Range" text={todayRange} />
         </div>
       </div>
     </div>
