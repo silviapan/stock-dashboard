@@ -4,7 +4,7 @@ Users can create multiple portfiolos and track stocks within them. The web app i
 
 ### Features
 #### Create a portfolio
-Users can create one or more stock portfolios and give each a unique name. 
+Users can create one or more stock portfolios and give each a unique name. If the portfolio name has been taken users will see a message to choose another name. 
 
 ### Add Stock
 Users can add stocks to each portfolio by entering the stock ticker symbol. When the stock is successfully added it will show:
@@ -14,7 +14,9 @@ Users can add stocks to each portfolio by entering the stock ticker symbol. When
 - Yesterday's close price
 - Lowest and highest price for the day
 
-The same stock can be added to one or more portfolios. 
+The same stock can be added to one or more portfolios.
+
+Users will see a message if the stock data can't be retrieved because the stock can't be found, account is missing permissions, or other general errors.
 
 ### Remove Stock
 Users can remove the stock from the portfolio. If the stock has been added to more than one portfolio, the stock will only be removed from the selected portfolio. 
