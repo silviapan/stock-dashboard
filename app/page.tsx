@@ -8,8 +8,7 @@ import { Button } from "./components/button";
 import { LabeledText } from "./components/text";
 
 function Ticker({ stockData, handleRemoveTicker }) {
-  const currentPrice = stockData.snapshot.lastTrade.p;
-  const currentPriceDisplay = `$${currentPrice.toFixed(2)}`;
+  const currentPrice = stockData.snapshot.day.c;
   const yesterdayClose = stockData.snapshot.prevDay.c;
   const percentageChange =
     ((yesterdayClose - currentPrice) / yesterdayClose) * 100;
@@ -17,19 +16,39 @@ function Ticker({ stockData, handleRemoveTicker }) {
     percentageChange > 0 ? "+" : ""
   }${percentageChange.toFixed(2)}%`;
 
+  function formatIntoCurrency(num: number) {
+    return num.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  }
+
   return (
     <div className="py-3" style={{ borderTop: "1px solid lightgrey" }}>
-      <p>{stockData.name}</p>
+      <p>
+        <span>{stockData.name}</span>
+        <span>{stockData.snapshot.todaysChange}</span>
+        <span>{stockData.snapshot.todaysChangePerc}</span>
+      </p>
       <div className="columns">
         <div className="column">
           <LabeledText label="Symbol" text={stockData.ticker} />
         </div>
         <div className="column">
-          <LabeledText label="Price" text={currentPriceDisplay} />
+          <LabeledText
+            label="Current Price"
+            text={formatIntoCurrency(currentPrice)}
+          />
         </div>
         <div className="column">
           <LabeledText
-            label="Day Change"
+            label="Yesterday Close"
+            text={formatIntoCurrency(yesterdayClose)}
+          />
+        </div>
+        <div className="column">
+          <LabeledText
+            label="Today's Change"
             text={percentageChangeDisplay}
             textStyleClasses={[
               percentageChange > 0 ? "has-text-success" : "has-text-danger",
@@ -54,12 +73,16 @@ function Ticker({ stockData, handleRemoveTicker }) {
   );
 }
 
+`https://api.polygon.io/v3/trades/AAPL?limit=1000&apiKey=KE0hNmlTKR5Pf5hiu99x4TrJm1b7x5m8`;
+
 function TickerList() {
   const [tickers, setTicker] = useState<string[]>([]);
   const [stockData, setStockData] = useState<{ [key: string]: any }>({});
   const [newTicker, setNewTicker] = useState<string>("");
 
   async function handleAddTicker() {
+    if (newTicker === "") return;
+
     // Ticker already exists so don't make request
     if (stockData[newTicker]) {
       setNewTicker("");
@@ -69,7 +92,7 @@ function TickerList() {
           fetchTicker({ ticker: newTicker }),
           fetchStockSnapshot({ ticker: newTicker }),
         ]);
-        if (tickerDetails && stockSnapshot) {
+        if (tickerDetails.results && stockSnapshot.ticker) {
           setTicker([...tickers, newTicker]);
           setStockData({
             ...stockData,
@@ -97,6 +120,29 @@ function TickerList() {
 
   return (
     <div>
+      <div className="field has-addons">
+        <div className="control">
+          <input
+            className="input is-small"
+            type="text"
+            placeholder="Add new ticker to the portfolio"
+            value={newTicker}
+            onChange={(e) => setNewTicker(e.target.value.toUpperCase())}
+          ></input>
+        </div>
+        <div className="control">
+          <Button
+            buttonText="Add Stock"
+            handleClick={handleAddTicker}
+            buttonStyleClasses={[
+              "is-small",
+              "is-info",
+              "is-light",
+              "is-outlined",
+            ]}
+          />
+        </div>
+      </div>
       {tickers.length > 0 &&
         tickers.map((ticker) => {
           return (
@@ -109,22 +155,6 @@ function TickerList() {
             </>
           );
         })}
-      <nav className="level">
-        <div className="level-right">
-          <div className="level-item">
-            <input
-              className="input"
-              type="text"
-              placeholder="Add new ticker to the portfolio"
-              value={newTicker}
-              onChange={(e) => setNewTicker(e.target.value.toUpperCase())}
-            ></input>
-          </div>
-          <div className="level-item">
-            <Button buttonText="Add Stock" handleClick={handleAddTicker} />
-          </div>
-        </div>
-      </nav>
     </div>
   );
 }
@@ -135,7 +165,7 @@ function Portfolio({ portfolio }) {
       <div className="card-content">
         <div className="content">
           <p className="subtitle">{portfolio}</p>
-          <TickerList />
+          <TickerList portfolio={portfolio} />
         </div>
       </div>
     </div>
@@ -179,7 +209,7 @@ function PortfolioList() {
               icon="add"
               buttonText="Add Portfolio"
               handleClick={handleOpenModal}
-              buttonStyleClasses={["is-link", "is-light", "is-outlined"]}
+              buttonStyleClasses={["is-info"]}
             />
           </div>
         </div>
@@ -229,7 +259,7 @@ function PortfolioList() {
             <div className="buttons">
               <Button
                 handleClick={handleAddPortfolio}
-                buttonStyleClasses={["is-link", "is-light"]}
+                buttonStyleClasses={["is-info"]}
                 buttonText="Save Changes"
               />
               <Button handleClick={handleCloseModal} buttonText="Cancel" />

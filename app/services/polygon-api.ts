@@ -129,10 +129,9 @@ const dummyData = {
 };
 
 export const fetchStockSnapshot = async ({ ticker }: { ticker: string }) => {
-  // const response = await fetch(
-  //   `https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/${ticker}?apiKey=${apiKey}`
-  // );
-  // const stockSnapshot = await response.json();
-  const stockSnapshot = createDummyData(ticker);
+  const response = await fetch(
+    `https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/${ticker}?apiKey=${apiKey}`
+  );
+  const stockSnapshot = await response.json();
   return stockSnapshot;
 };
