@@ -119,6 +119,10 @@ function TickerList() {
           setRequestError(
             `Stock with ticker '${newTicker}' can't be found. Please try searching for another stock.`
           );
+        } else if (stockSnapshot.status === "NOT_AUTHORIZED") {
+          setRequestError(
+            `Please upgrade your plan to view stock data about ${newTicker}.`
+          );
         }
 
         if (tickerDetails.results && stockSnapshot.ticker) {
@@ -134,6 +138,9 @@ function TickerList() {
         }
       } catch (err) {
         console.error("Failed to fetch data", err);
+        setRequestError(
+          `There was an error getting details about ${newTicker}. Please try again.`
+        );
       }
     }
   }
