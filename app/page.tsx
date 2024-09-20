@@ -92,19 +92,35 @@ function TickerList() {
   const [tickers, setTicker] = useState<string[]>([]);
   const [stockData, setStockData] = useState<{ [key: string]: any }>({});
   const [newTicker, setNewTicker] = useState<string>("");
+  const [requestError, setRequestError] = useState<string>("");
+
+  function handleInputNewTicker(e) {
+    setNewTicker(e.target.value.toUpperCase());
+    setRequestError("");
+  }
 
   async function handleAddTicker() {
     if (newTicker === "") return;
 
     // Ticker already exists so don't make request
+    // TODO:: Add indicator to user that stock already exists
     if (stockData[newTicker]) {
-      setNewTicker("");
+      setRequestError(
+        `Stock with ticker ${newTicker} has already been added to the portfolio.`
+      );
     } else {
       try {
         const [tickerDetails, stockSnapshot] = await Promise.all([
           fetchTicker({ ticker: newTicker }),
           fetchStockSnapshot({ ticker: newTicker }),
         ]);
+
+        if (tickerDetails.status === "NOT_FOUND") {
+          setRequestError(
+            `Stock with ticker '${newTicker}' can't be found. Please try searching for another stock.`
+          );
+        }
+
         if (tickerDetails.results && stockSnapshot.ticker) {
           setTicker([...tickers, newTicker]);
           setStockData({
@@ -140,7 +156,7 @@ function TickerList() {
             type="text"
             placeholder="Add new ticker to the portfolio"
             value={newTicker}
-            onChange={(e) => setNewTicker(e.target.value.toUpperCase())}
+            onChange={(e) => handleInputNewTicker(e)}
           ></input>
         </div>
         <div className="control">
@@ -156,6 +172,9 @@ function TickerList() {
           />
         </div>
       </div>
+      {requestError.length > 0 && (
+        <p className="help has-text-danger">{requestError}</p>
+      )}
       {tickers.length > 0 &&
         tickers.map((ticker) => {
           return (
