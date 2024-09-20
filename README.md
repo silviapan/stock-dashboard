@@ -1,6 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Stock Dashboard
+
+Users can create multiple portfiolos and track stocks within them. The web app is built with React (Next.js) and uses the Polygon.io API to retrieve stock data, including company details, most recent price, and previous close price.
+
+### Features
+#### Create a portfolio
+Users can create one or more stock portfolios and give each a unique name. 
+
+### Add Stock
+Users can add stocks to each portfolio by entering the stock ticker symbol. When the stock is successfully added it will show:
+- Organization name
+- Today's price change
+- Most recent price
+- Yesterday's close price
+- Lowest and highest price for the day
+
+The same stock can be added to one or more portfolios. 
+
+### Remove Stock
+Users can remove the stock from the portfolio. If the stock has been added to more than one portfolio, the stock will only be removed from the selected portfolio. 
 
 ## Getting Started
+
+### Tech Stack
+- React (using Typescript) with Next.js
+- API: [Polygon.io API](https://polygon.io/docs/stocks/getting-started)
+
+### Setup
 
 First, run the development server:
 
@@ -16,21 +41,21 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create an `.env.local` file with key `NEXT_PUBLIC_POLYGON_API_KEY`. Please add a key that has a `Starter` and above plan for the features to work correctly. Please visit [Polygon](https://polygon.io/pricing) for more information about subscription plans.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Future Features
+### Portfolio Management
+- Rename portfolio
+- Delete portfolio and all stored stocks
+- Merge portfolios
 
-## Learn More
+### Stock Search
+- Fuzzy search for stocks
+- Filter stock search
 
-To learn more about Next.js, take a look at the following resources:
+### Layout
+- Reorder stocks in portfolio
+- Reorder portfolio in dashboard
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
