@@ -20,22 +20,33 @@ function Ticker({ stockData, handleRemoveTicker }) {
   )}`;
 
   function formatIntoCurrency(num: number) {
-    return num.toLocaleString("en-US", {
+    let formattedNum = num.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
     });
+    if (num >= 0) {
+      formattedNum = `+${formattedNum}`;
+    }
+    return formattedNum;
   }
 
   function formatIntoPercentDisplay(num: number) {
-    return `${num.toFixed(2)}%`;
+    let formattedNum = `${num.toFixed(2)}%`;
+    if (num >= 0) {
+      formattedNum = `+${formattedNum}`;
+    }
+    return formattedNum;
   }
 
   const todayChangePositive = todayChange >= 0;
 
   return (
     <div className="py-3" style={{ borderTop: "1px solid lightgrey" }}>
-      <nav className="level mb-3">
-        <div className="level-left">
+      <nav className="level mb-3 is-flex-direction-row is-flex-wrap-wrap">
+        <div
+          className="level-left is-flex-direction-row is-flex-wrap-wrap"
+          style={{ maxWidth: "90%" }}
+        >
           <span>{stockData.name}</span>
           <span
             className={`tag is-medium is-light ${
@@ -63,7 +74,7 @@ function Ticker({ stockData, handleRemoveTicker }) {
       </nav>
 
       <div className="columns">
-        <div className="column">
+        <div className="column is-2">
           <LabeledText label="Symbol" text={stockData.ticker} />
         </div>
         <div className="column">
@@ -159,7 +170,7 @@ function TickerList() {
       <div className="field has-addons">
         <div className="control">
           <input
-            className="input is-small"
+            className="input is-small is-dark"
             type="text"
             placeholder="Add new ticker to the portfolio"
             value={newTicker}
@@ -170,12 +181,7 @@ function TickerList() {
           <Button
             buttonText="Add Stock"
             handleClick={handleAddTicker}
-            buttonStyleClasses={[
-              "is-small",
-              "is-info",
-              "is-light",
-              "is-outlined",
-            ]}
+            buttonStyleClasses={["is-small", "is-dark", "is-outlined"]}
           />
         </div>
       </div>
@@ -238,7 +244,9 @@ function PortfolioList() {
       <nav className="level">
         <div className="level-left">
           <div className="level-item">
-            <h1 className="title">Silvia Pan's Portfolios</h1>
+            <h1 className="is-size-3 has-text-weight-semibold">
+              Silvia Pan's Portfolios
+            </h1>
           </div>
         </div>
         <div className="level-right">
@@ -248,7 +256,7 @@ function PortfolioList() {
               icon="add"
               buttonText="Add Portfolio"
               handleClick={handleOpenModal}
-              buttonStyleClasses={["is-info"]}
+              buttonStyleClasses={["is-dark"]}
             />
           </div>
         </div>
@@ -256,7 +264,10 @@ function PortfolioList() {
       {portfolios && portfolios.length ? (
         <div className="columns is-flex-wrap-wrap">
           {portfolios.map((portfolio) => (
-            <div className="column is-half" key={portfolio}>
+            <div
+              className="column is-half-desktop is-full-tablet"
+              key={portfolio}
+            >
               <Portfolio portfolio={portfolio} />
             </div>
           ))}
@@ -298,7 +309,7 @@ function PortfolioList() {
             <div className="buttons">
               <Button
                 handleClick={handleAddPortfolio}
-                buttonStyleClasses={["is-info"]}
+                buttonStyleClasses={["is-dark"]}
                 buttonText="Save Changes"
               />
               <Button handleClick={handleCloseModal} buttonText="Cancel" />
