@@ -5,19 +5,50 @@ import styles from "./page.module.css";
 import { useState, useEffect } from "react";
 import { fetchTicker, fetchStockSnapshot } from "./services/polygon-api";
 import { Button } from "./components/button";
+import { LabeledText } from "./components/text";
 
 function Ticker({ stockData, handleRemoveTicker }) {
+  const currentPrice = stockData.snapshot.lastTrade.p;
+  const currentPriceDisplay = `$${currentPrice.toFixed(2)}`;
+  const yesterdayClose = stockData.snapshot.prevDay.c;
+  const percentageChange =
+    ((yesterdayClose - currentPrice) / yesterdayClose) * 100;
+  const percentageChangeDisplay = `${
+    percentageChange > 0 ? "+" : ""
+  }${percentageChange.toFixed(2)}%`;
+
   return (
-    <div className="columns">
-      <div className="column">
-        <p>{stockData.name}</p>
-      </div>
-      <div className="column">
-        <Button
-          icon="delete"
-          buttonText="Remove"
-          handleClick={handleRemoveTicker}
-        />
+    <div className="py-3" style={{ borderTop: "1px solid lightgrey" }}>
+      <p>{stockData.name}</p>
+      <div className="columns">
+        <div className="column">
+          <LabeledText label="Symbol" text={stockData.ticker} />
+        </div>
+        <div className="column">
+          <LabeledText label="Price" text={currentPriceDisplay} />
+        </div>
+        <div className="column">
+          <LabeledText
+            label="Day Change"
+            text={percentageChangeDisplay}
+            textStyleClasses={[
+              percentageChange > 0 ? "has-text-success" : "has-text-danger",
+            ]}
+          />
+        </div>
+        <div className="column">
+          <Button
+            icon="delete"
+            buttonText=""
+            handleClick={handleRemoveTicker}
+            buttonStyleClasses={[
+              "is-small",
+              "is-rounded",
+              "is-danger",
+              "is-light",
+            ]}
+          />
+        </div>
       </div>
     </div>
   );
@@ -29,26 +60,31 @@ function TickerList() {
   const [newTicker, setNewTicker] = useState<string>("");
 
   async function handleAddTicker() {
-    try {
-      const [tickerDetails, stockSnapshot] = await Promise.all([
-        fetchTicker({ ticker: newTicker }),
-        fetchStockSnapshot({ ticker: newTicker }),
-      ]);
-    } catch (err) {}
+    // Ticker already exists so don't make request
+    if (stockData[newTicker]) {
+      setNewTicker("");
+    } else {
+      try {
+        const [tickerDetails, stockSnapshot] = await Promise.all([
+          fetchTicker({ ticker: newTicker }),
+          fetchStockSnapshot({ ticker: newTicker }),
+        ]);
+        if (tickerDetails && stockSnapshot) {
+          setTicker([...tickers, newTicker]);
+          setStockData({
+            ...stockData,
+            [newTicker]: {
+              ...tickerDetails.results,
+              snapshot: stockSnapshot.ticker,
+            },
+          });
+          setNewTicker("");
+        }
+      } catch (err) {
+        console.error("Failed to fetch data", err);
+      }
+    }
   }
-
-  // async function handleAddTicker() {
-  //   try {
-  //     const tickerJson = await fetchTicker({ ticker: newTicker });
-  //     if (tickerJson.results) {
-  //       setTicker([...tickers, newTicker]);
-  //       setStockData({ ...stockData, [newTicker]: tickerJson.results });
-  //       setNewTicker("");
-  //     }
-  //   } catch (err) {
-  //     console.error("Failed to fetch stock data", err);
-  //   }
-  // }
 
   function handleRemoveTicker(selectedTicker: string) {
     setTicker(tickers.filter((t) => t !== selectedTicker));
@@ -143,6 +179,7 @@ function PortfolioList() {
               icon="add"
               buttonText="Add Portfolio"
               handleClick={handleOpenModal}
+              buttonStyleClasses={["is-link", "is-light", "is-outlined"]}
             />
           </div>
         </div>
@@ -181,21 +218,21 @@ function PortfolioList() {
                 <input
                   className="input"
                   type="text"
-                  placeholder="Portfolio Name"
+                  placeholder="Name New Portfolio"
                   value={newPortfolioName}
                   onChange={(e) => setNewPortfolioName(e.target.value)}
                 ></input>
               </div>
             </div>
           </section>
-          <footer className="modal-card-foot">
+          <footer className="modal-card-foot is-justify-content-center">
             <div className="buttons">
-              <button className="button is-info" onClick={handleAddPortfolio}>
-                Save changes
-              </button>
-              <button className="button" onClick={handleCloseModal}>
-                Cancel
-              </button>
+              <Button
+                handleClick={handleAddPortfolio}
+                buttonStyleClasses={["is-link", "is-light"]}
+                buttonText="Save Changes"
+              />
+              <Button handleClick={handleCloseModal} buttonText="Cancel" />
             </div>
           </footer>
         </div>
