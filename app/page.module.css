@@ -10,6 +10,8 @@
 
   padding: 3rem;
   font-family: var(--font-geist-sans);
+  height: 100vh;
+  background: rgb(239, 237, 235);
 }
 
 @media (prefers-color-scheme: dark) {
