@@ -221,12 +221,22 @@ function PortfolioList() {
   const [portfolios, setPortfolios] = useState<string[]>([]);
   const [newPortfolioName, setNewPortfolioName] = useState<string>("");
   const [displayModal, setDisplayModal] = useState<boolean>(false);
+  const [requestError, setRequestError] = useState<string>("");
 
   const handleAddPortfolio = () => {
+    const portfolioNames = new Set(portfolios);
+
     if (newPortfolioName.trim() !== "") {
-      setPortfolios([...portfolios, newPortfolioName]);
-      setNewPortfolioName("");
-      setDisplayModal(false);
+      if (portfolioNames.has(newPortfolioName)) {
+        setRequestError(
+          `Portfolio with name ${newPortfolioName} already exists. Please choose another name.`
+        );
+      } else {
+        setPortfolios([...portfolios, newPortfolioName]);
+        setNewPortfolioName("");
+        setDisplayModal(false);
+        setRequestError("");
+      }
     }
   };
 
@@ -237,6 +247,7 @@ function PortfolioList() {
   const handleCloseModal = () => {
     setDisplayModal(false);
     setNewPortfolioName("");
+    setRequestError("");
   };
 
   return (
@@ -275,7 +286,7 @@ function PortfolioList() {
       ) : (
         <div className="notification">
           <p>
-            There are currently no portfolios. Add a new porfolitio to start
+            There are currently no portfolios. Add a new portfolio to start
             organizing your stocks.
           </p>
         </div>
@@ -304,6 +315,9 @@ function PortfolioList() {
                 ></input>
               </div>
             </div>
+            {requestError.length > 0 && (
+              <p className="help is-danger">{requestError}</p>
+            )}
           </section>
           <footer className="modal-card-foot is-justify-content-center">
             <div className="buttons">
