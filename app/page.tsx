@@ -97,8 +97,6 @@ function Ticker({ stockData, handleRemoveTicker }) {
   );
 }
 
-`https://api.polygon.io/v3/trades/AAPL?limit=1000&apiKey=KE0hNmlTKR5Pf5hiu99x4TrJm1b7x5m8`;
-
 function TickerList() {
   const [tickers, setTicker] = useState<string[]>([]);
   const [stockData, setStockData] = useState<{ [key: string]: any }>({});
@@ -114,7 +112,6 @@ function TickerList() {
     if (newTicker === "") return;
 
     // Ticker already exists so don't make request
-    // TODO:: Add indicator to user that stock already exists
     if (stockData[newTicker]) {
       setRequestError(
         `Stock with ticker ${newTicker} has already been added to the portfolio.`
