@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import styles from "./page.module.css";
 import { useState, useEffect } from "react";
 import { fetchTicker, fetchStockSnapshot } from "./services/polygon-api";
 import { Button } from "./components/button";
@@ -334,7 +332,7 @@ function PortfolioList() {
 
 export default function Home() {
   return (
-    <div className={styles.page}>
+    <div>
       <PortfolioList />
     </div>
   );
