@@ -2,8 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { fetchTicker, fetchStockSnapshot } from "./services/polygon-api";
-import { Button } from "./components/button";
+// import { Button } from "./components/button";
 import { LabeledText } from "./components/text";
+import {
+  Container,
+  Button,
+  Modal,
+  Box,
+  Typography,
+  TextField,
+  Stack,
+} from "@mui/material";
+
+import AddIcon from "@mui/icons-material/Add";
 
 function Ticker({ stockData, handleRemoveTicker }) {
   const currentPrice = stockData.snapshot.day.c;
@@ -245,6 +256,18 @@ function PortfolioList() {
     setRequestError("");
   };
 
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
   return (
     <div>
       <nav className="level">
@@ -258,12 +281,14 @@ function PortfolioList() {
         <div className="level-right">
           <div className="level-item"></div>
           <div className="level-item">
+            {/* TODO:: handle opening modal */}
             <Button
-              icon="add"
-              buttonText="Add Portfolio"
-              handleClick={handleOpenModal}
-              buttonStyleClasses={["is-dark"]}
-            />
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleOpenModal}
+            >
+              Add Portfolio
+            </Button>
           </div>
         </div>
       </nav>
@@ -286,54 +311,45 @@ function PortfolioList() {
           </p>
         </div>
       )}
-      <div className={`modal ${displayModal ? "is-active" : ""}`}>
-        <div className="modal-background"></div>
-        <div className="modal-card">
-          <header className="modal-card-head">
-            <p className="modal-card-title is-6">Add Portfolio</p>
-            <button
-              className="delete"
-              aria-label="close"
-              onClick={handleCloseModal}
-            ></button>
-          </header>
-          <section className="modal-card-body">
-            <div className="field">
-              <label className="label">Portfolio Name</label>
-              <div className="control">
-                <input
-                  className="input"
-                  type="text"
-                  placeholder="Name New Portfolio"
-                  value={newPortfolioName}
-                  onChange={(e) => setNewPortfolioName(e.target.value)}
-                ></input>
-              </div>
-            </div>
-            {requestError.length > 0 && (
-              <p className="help is-danger">{requestError}</p>
-            )}
-          </section>
-          <footer className="modal-card-foot is-justify-content-center">
-            <div className="buttons">
-              <Button
-                handleClick={handleAddPortfolio}
-                buttonStyleClasses={["is-dark"]}
-                buttonText="Save Changes"
-              />
-              <Button handleClick={handleCloseModal} buttonText="Cancel" />
-            </div>
-          </footer>
-        </div>
-      </div>
+      <Modal
+        open={displayModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box component="form" sx={style}>
+          <Typography id="modal-modal-title" variant="h5" component="h2">
+            Add Portfolio
+          </Typography>
+          <TextField
+            required
+            id="outlined-required"
+            label="Portfolio Name"
+            value={newPortfolioName}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setNewPortfolioName(event.target.value);
+            }}
+            helperText={requestError}
+            variant="standard"
+          />
+          <Stack direction="row" spacing={2}>
+            <Button variant="contained" onClick={handleAddPortfolio}>
+              Save Changes
+            </Button>
+            <Button variant="outlined" onClick={handleCloseModal}>
+              Cancel
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
     </div>
   );
 }
 
 export default function Home() {
   return (
-    <div>
+    <Container>
       <PortfolioList />
-    </div>
+    </Container>
   );
 }
