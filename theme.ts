@@ -13,6 +13,15 @@ const theme = createTheme({
   typography: {
     fontFamily: `${inter.style.fontFamily}, Helvetica, Arial, sans-serif`,
   },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          padding: "3rem",
+        },
+      },
+    },
+  },
 });
 
 export default theme;

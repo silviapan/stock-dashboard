@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { fetchTicker, fetchStockSnapshot } from "./services/polygon-api";
-// import { Button } from "./components/button";
 import { LabeledText } from "./components/text";
 import {
   Container,
@@ -174,22 +173,18 @@ function TickerList() {
   return (
     <div>
       <div className="field has-addons">
-        <div className="control">
-          <input
-            className="input is-small is-dark"
-            type="text"
-            placeholder="Add new ticker to the portfolio"
-            value={newTicker}
-            onChange={(e) => handleInputNewTicker(e)}
-          ></input>
-        </div>
-        <div className="control">
-          <Button
-            buttonText="Add Stock"
-            handleClick={handleAddTicker}
-            buttonStyleClasses={["is-small", "is-dark", "is-outlined"]}
-          />
-        </div>
+        <TextField
+          id="outlined-start-adornment"
+          label="Portfolio Name"
+          value={newTicker}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            handleInputNewTicker(event);
+          }}
+        />
+
+        <Button variant="outlined" onClick={handleAddTicker}>
+          Add Stock
+        </Button>
       </div>
       {requestError.length > 0 && (
         <p className="help has-text-danger">{requestError}</p>
@@ -270,28 +265,21 @@ function PortfolioList() {
 
   return (
     <div>
-      <nav className="level">
-        <div className="level-left">
-          <div className="level-item">
-            <h1 className="is-size-3 has-text-weight-semibold">
-              Silvia Pan's Portfolios
-            </h1>
-          </div>
-        </div>
-        <div className="level-right">
-          <div className="level-item"></div>
-          <div className="level-item">
-            {/* TODO:: handle opening modal */}
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleOpenModal}
-            >
-              Add Portfolio
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <Stack
+        direction="row"
+        sx={{ justifyContent: "space-between", flexWrap: "wrap" }}
+      >
+        <Typography variant="h5" component="h2">
+          Silvia Pan's Portfolios
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleOpenModal}
+        >
+          Add Portfolio
+        </Button>
+      </Stack>
       {portfolios && portfolios.length ? (
         <div className="columns is-flex-wrap-wrap">
           {portfolios.map((portfolio) => (
