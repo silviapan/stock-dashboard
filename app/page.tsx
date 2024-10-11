@@ -6,14 +6,20 @@ import { LabeledText } from "./components/text";
 import {
   Container,
   Button,
+  IconButton,
   Modal,
   Box,
   Typography,
   TextField,
   Stack,
+  Grid2 as Grid,
+  Card,
+  CardContent,
+  Alert,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function Ticker({ stockData, handleRemoveTicker }) {
   const currentPrice = stockData.snapshot.day.c;
@@ -72,12 +78,9 @@ function Ticker({ stockData, handleRemoveTicker }) {
           </span>
         </div>
         <div className="level-right">
-          <Button
-            icon="delete"
-            buttonText=""
-            handleClick={handleRemoveTicker}
-            buttonStyleClasses={["is-small", "is-rounded"]}
-          />
+          <IconButton onClick={handleRemoveTicker}>
+            <DeleteIcon />
+          </IconButton>
         </div>
       </nav>
 
@@ -207,14 +210,12 @@ function TickerList() {
 
 function Portfolio({ portfolio }) {
   return (
-    <div className="card">
-      <div className="card-content">
-        <div className="content">
-          <p className="subtitle">{portfolio}</p>
-          <TickerList portfolio={portfolio} />
-        </div>
-      </div>
-    </div>
+    <Card variant="outlined">
+      <CardContent>
+        <Typography variant="h6">{portfolio}</Typography>
+        <TickerList portfolio={portfolio} />
+      </CardContent>
+    </Card>
   );
 }
 
@@ -281,23 +282,18 @@ function PortfolioList() {
         </Button>
       </Stack>
       {portfolios && portfolios.length ? (
-        <div className="columns is-flex-wrap-wrap">
+        <Grid container spacing={2}>
           {portfolios.map((portfolio) => (
-            <div
-              className="column is-half-desktop is-full-tablet"
-              key={portfolio}
-            >
+            <Grid size={{ md: 12, lg: 6 }}>
               <Portfolio portfolio={portfolio} />
-            </div>
+            </Grid>
           ))}
-        </div>
+        </Grid>
       ) : (
-        <div className="notification">
-          <p>
-            There are currently no portfolios. Add a new portfolio to start
-            organizing your stocks.
-          </p>
-        </div>
+        <Alert severity="info">
+          There are currently no portfolios. Add a new portfolio to start
+          organizing your stocks.
+        </Alert>
       )}
       <Modal
         open={displayModal}
