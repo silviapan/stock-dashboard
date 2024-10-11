@@ -1,20 +1,15 @@
+import { Stack, Typography } from "@mui/material";
+
 interface LabeledTextProps {
   label: string;
   text: string;
-  textStyleClasses?: string[];
 }
 
-export const LabeledText = ({
-  label,
-  text,
-  textStyleClasses,
-}: LabeledTextProps) => {
+export const LabeledText = ({ label, text }: LabeledTextProps) => {
   return (
-    <div>
-      <p className="help has-text-grey-light">{label}</p>
-      <p className={`text ${!!textStyleClasses && textStyleClasses.join(" ")}`}>
-        {text}
-      </p>
-    </div>
+    <Stack>
+      <Typography variant="caption">{label}</Typography>
+      <Typography variant="body1">{text}</Typography>
+    </Stack>
   );
 };

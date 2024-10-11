@@ -16,6 +16,10 @@ import {
   Card,
   CardContent,
   Alert,
+  Paper,
+  InputBase,
+  Divider,
+  Chip,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -54,6 +58,13 @@ function Ticker({ stockData, handleRemoveTicker }) {
 
   const todayChangePositive = todayChange >= 0;
 
+  const stockDataDisplay = [
+    { label: "Symbol", text: stockData.ticker },
+    { label: "Current Price", text: formatIntoCurrency(currentPrice) },
+    { label: "Yesterday Close", text: formatIntoCurrency(yesterdayClose) },
+    { label: "Day Range", text: todayRange },
+  ];
+
   return (
     <div className="py-3" style={{ borderTop: "1px solid lightgrey" }}>
       <nav className="level mb-3 is-flex-direction-row is-flex-wrap-wrap">
@@ -61,49 +72,30 @@ function Ticker({ stockData, handleRemoveTicker }) {
           className="level-left is-flex-direction-row is-flex-wrap-wrap"
           style={{ maxWidth: "90%" }}
         >
-          <span>{stockData.name}</span>
-          <span
-            className={`tag is-medium is-light ${
-              todayChangePositive ? "is-success" : "is-danger"
-            }`}
-          >
-            {formatIntoPercentDisplay(todayChangePercent)}
-          </span>
-          <span
-            className={`${
-              todayChangePositive ? "has-text-success" : "has-text-danger"
-            }`}
-          >
-            {formatIntoCurrency(todayChange, true)}
-          </span>
+          <Stack direction="row" spacing={1}>
+            <span>{stockData.name}</span>
+            <Chip
+              color={`${todayChangePositive ? "success" : "error"}`}
+              label={formatIntoPercentDisplay(todayChangePercent)}
+              size="small"
+              sx={{ borderRadius: "8px" }}
+            ></Chip>
+            <Typography color={`${todayChangePositive ? "success" : "error"}`}>
+              {formatIntoCurrency(todayChange, true)}
+            </Typography>
+          </Stack>
         </div>
-        <div className="level-right">
-          <IconButton onClick={handleRemoveTicker}>
-            <DeleteIcon />
-          </IconButton>
-        </div>
+        <IconButton onClick={handleRemoveTicker}>
+          <DeleteIcon />
+        </IconButton>
       </nav>
-
-      <div className="columns">
-        <div className="column is-2">
-          <LabeledText label="Symbol" text={stockData.ticker} />
-        </div>
-        <div className="column">
-          <LabeledText
-            label="Current Price"
-            text={formatIntoCurrency(currentPrice)}
-          />
-        </div>
-        <div className="column">
-          <LabeledText
-            label="Yesterday Close"
-            text={formatIntoCurrency(yesterdayClose)}
-          />
-        </div>
-        <div className="column">
-          <LabeledText label="Day Range" text={todayRange} />
-        </div>
-      </div>
+      <Grid container spacing={5}>
+        {stockDataDisplay.map((data) => (
+          <Grid size="auto">
+            <LabeledText label={data.label} text={data.text} />
+          </Grid>
+        ))}
+      </Grid>
     </div>
   );
 }
@@ -175,22 +167,25 @@ function TickerList() {
 
   return (
     <div>
-      <div className="field has-addons">
-        <TextField
-          id="outlined-start-adornment"
-          label="Portfolio Name"
+      <Paper
+        component="form"
+        variant="outlined"
+        sx={{ p: "2px 4px", display: "flex", alignItems: "center" }}
+      >
+        <InputBase
+          sx={{ ml: 1, flex: 1 }}
+          placeholder="Enter Ticker Symbol"
           value={newTicker}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             handleInputNewTicker(event);
           }}
         />
-
-        <Button variant="outlined" onClick={handleAddTicker}>
-          Add Stock
-        </Button>
-      </div>
+        <IconButton type="button" aria-label="Add" onClick={handleAddTicker}>
+          <AddIcon />
+        </IconButton>
+      </Paper>
       {requestError.length > 0 && (
-        <p className="help has-text-danger">{requestError}</p>
+        <Alert severity="error">{requestError}</Alert>
       )}
       {tickers.length > 0 &&
         tickers.map((ticker) => {
@@ -210,12 +205,10 @@ function TickerList() {
 
 function Portfolio({ portfolio }) {
   return (
-    <Card variant="outlined">
-      <CardContent>
-        <Typography variant="h6">{portfolio}</Typography>
-        <TickerList portfolio={portfolio} />
-      </CardContent>
-    </Card>
+    <Paper elevation={2}>
+      <Typography variant="h6">{portfolio}</Typography>
+      <TickerList portfolio={portfolio} />
+    </Paper>
   );
 }
 
@@ -284,7 +277,7 @@ function PortfolioList() {
       {portfolios && portfolios.length ? (
         <Grid container spacing={2}>
           {portfolios.map((portfolio) => (
-            <Grid size={{ md: 12, lg: 6 }}>
+            <Grid size={{ md: 12, lg: 6 }} key={portfolio}>
               <Portfolio portfolio={portfolio} />
             </Grid>
           ))}
