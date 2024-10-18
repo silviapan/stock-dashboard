@@ -66,29 +66,22 @@ function Ticker({ stockData, handleRemoveTicker }) {
   ];
 
   return (
-    <div className="py-3" style={{ borderTop: "1px solid lightgrey" }}>
-      <nav className="level mb-3 is-flex-direction-row is-flex-wrap-wrap">
-        <div
-          className="level-left is-flex-direction-row is-flex-wrap-wrap"
-          style={{ maxWidth: "90%" }}
-        >
-          <Stack direction="row" spacing={1}>
-            <span>{stockData.name}</span>
-            <Chip
-              color={`${todayChangePositive ? "success" : "error"}`}
-              label={formatIntoPercentDisplay(todayChangePercent)}
-              size="small"
-              sx={{ borderRadius: "8px" }}
-            ></Chip>
-            <Typography color={`${todayChangePositive ? "success" : "error"}`}>
-              {formatIntoCurrency(todayChange, true)}
-            </Typography>
-          </Stack>
-        </div>
+    <Box>
+      <Stack direction="row" spacing={1}>
+        <Typography>{stockData.name}</Typography>
+        <Chip
+          color={`${todayChangePositive ? "success" : "error"}`}
+          label={formatIntoPercentDisplay(todayChangePercent)}
+          size="small"
+          sx={{ borderRadius: "8px" }}
+        ></Chip>
+        <Typography color={`${todayChangePositive ? "success" : "error"}`}>
+          {formatIntoCurrency(todayChange, true)}
+        </Typography>
         <IconButton onClick={handleRemoveTicker}>
           <DeleteIcon />
         </IconButton>
-      </nav>
+      </Stack>
       <Grid container spacing={5}>
         {stockDataDisplay.map((data) => (
           <Grid size="auto">
@@ -96,7 +89,7 @@ function Ticker({ stockData, handleRemoveTicker }) {
           </Grid>
         ))}
       </Grid>
-    </div>
+    </Box>
   );
 }
 
@@ -166,7 +159,7 @@ function TickerList() {
   }
 
   return (
-    <div>
+    <Box>
       <Paper
         component="form"
         variant="outlined"
@@ -191,6 +184,7 @@ function TickerList() {
         tickers.map((ticker) => {
           return (
             <>
+              <Divider />
               <Ticker
                 key={ticker}
                 stockData={stockData[ticker]}
@@ -199,7 +193,7 @@ function TickerList() {
             </>
           );
         })}
-    </div>
+    </Box>
   );
 }
 
@@ -258,7 +252,7 @@ function PortfolioList() {
   };
 
   return (
-    <div>
+    <Box>
       <Stack
         direction="row"
         sx={{ justifyContent: "space-between", flexWrap: "wrap" }}
@@ -319,7 +313,7 @@ function PortfolioList() {
           </Stack>
         </Box>
       </Modal>
-    </div>
+    </Box>
   );
 }
 
