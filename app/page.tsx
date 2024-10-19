@@ -281,7 +281,6 @@ function PortfolioList() {
         displayModal={displayModal}
         handleCloseModal={handleCloseModal}
         cardTitle="Add Portfolio"
-        displaySaveButton={true}
         handleSave={handleAddPortfolio}
       >
         <TextInput

@@ -18,7 +18,6 @@ interface CardModalProps {
   handleCloseModal: () => void;
   cardTitle: string;
   children?: React.ReactNode;
-  displaySaveButton?: boolean;
   handleSave?: () => void;
 }
 
@@ -26,7 +25,6 @@ export const CardModal: React.FC<CardModalProps> = ({
   displayModal,
   handleCloseModal,
   cardTitle,
-  displaySaveButton = false,
   handleSave,
   children,
 }) => {
@@ -43,7 +41,7 @@ export const CardModal: React.FC<CardModalProps> = ({
         </Typography>
         <Box pb={2}>{children}</Box>
         <Stack direction="row" spacing={2}>
-          {displaySaveButton && (
+          {handleSave && (
             <Button variant="contained" onClick={handleSave}>
               Save Changes
             </Button>
