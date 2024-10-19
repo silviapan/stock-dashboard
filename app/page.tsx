@@ -24,6 +24,10 @@ import {
 
 import { TextInput } from "./components/ui/textInput";
 import { CardModal } from "./components/ui/cardModal";
+import {
+  formatIntoCurrency,
+  formatIntoPercentDisplay,
+} from "./utils/stockDisplayUtils";
 
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -39,25 +43,6 @@ function Ticker({ stockData, handleRemoveTicker }) {
   const todayRange = `${formatIntoCurrency(todayLow)} - ${formatIntoCurrency(
     todayHigh
   )}`;
-
-  function formatIntoCurrency(num: number, includeSign?: boolean) {
-    let formattedNum = num.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    });
-    if (num >= 0 && includeSign) {
-      formattedNum = `+${formattedNum}`;
-    }
-    return formattedNum;
-  }
-
-  function formatIntoPercentDisplay(num: number, includeSign?: boolean) {
-    let formattedNum = `${num.toFixed(2)}%`;
-    if (num >= 0 && includeSign) {
-      formattedNum = `+${formattedNum}`;
-    }
-    return formattedNum;
-  }
 
   const todayChangePositive = todayChange >= 0;
 
