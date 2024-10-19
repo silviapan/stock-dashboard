@@ -21,6 +21,17 @@ const theme = createTheme({
         },
       },
     },
+    MuiModal: {
+      styleOverrides: {
+        root: {
+          variants: [
+            {
+              style: { backgroundColor: "rgba(0,0,0,0.8)" },
+            },
+          ],
+        },
+      },
+    },
   },
 });
 

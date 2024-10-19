@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 
 import { TextInput } from "./components/ui/textInput";
+import { CardModal } from "./components/ui/cardModal";
 
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -245,18 +246,6 @@ function PortfolioList() {
     setNewPortfolioName(value);
   };
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-
   return (
     <Box>
       <Stack
@@ -288,33 +277,21 @@ function PortfolioList() {
           organizing your stocks.
         </Alert>
       )}
-      <Modal
-        open={displayModal}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      <CardModal
+        displayModal={displayModal}
+        handleCloseModal={handleCloseModal}
+        cardTitle="Add Portfolio"
+        displaySaveButton={true}
+        handleSave={handleAddPortfolio}
       >
-        <Box component="form" sx={style}>
-          <Typography id="modal-modal-title" variant="h5" component="h2">
-            Add Portfolio
-          </Typography>
-          <TextInput
-            label="Portfolio Name"
-            value={newPortfolioName}
-            helperText={requestError}
-            required={true}
-            onInputChange={handleInputPortfolioName}
-          />
-          <Stack direction="row" spacing={2}>
-            <Button variant="contained" onClick={handleAddPortfolio}>
-              Save Changes
-            </Button>
-            <Button variant="outlined" onClick={handleCloseModal}>
-              Cancel
-            </Button>
-          </Stack>
-        </Box>
-      </Modal>
+        <TextInput
+          label="Portfolio Name"
+          value={newPortfolioName}
+          helperText={requestError}
+          required={true}
+          onInputChange={handleInputPortfolioName}
+        />
+      </CardModal>
     </Box>
   );
 }

@@ -17,15 +17,16 @@ export const TextInput = ({
 }: TextInputProps) => {
   return (
     <TextField
+      fullWidth
       required={required}
-      id="outlined-required"
+      id="standard-basic"
+      variant="standard"
       label={label}
       value={value}
       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         onInputChange(event.target.value);
       }}
       helperText={helperText}
-      variant="standard"
     />
   );
 };
