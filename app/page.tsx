@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { fetchTicker, fetchStockSnapshot } from "./services/polygon-api";
-import { LabeledText } from "./components/text";
+import { LabeledText } from "./components/ui/text";
 import {
   Container,
   Button,
@@ -21,6 +21,8 @@ import {
   Divider,
   Chip,
 } from "@mui/material";
+
+import { TextInput } from "./components/ui/textInput";
 
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -239,6 +241,10 @@ function PortfolioList() {
     setRequestError("");
   };
 
+  const handleInputPortfolioName = (value: string) => {
+    setNewPortfolioName(value);
+  };
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -292,16 +298,12 @@ function PortfolioList() {
           <Typography id="modal-modal-title" variant="h5" component="h2">
             Add Portfolio
           </Typography>
-          <TextField
-            required
-            id="outlined-required"
+          <TextInput
             label="Portfolio Name"
             value={newPortfolioName}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setNewPortfolioName(event.target.value);
-            }}
             helperText={requestError}
-            variant="standard"
+            required={true}
+            onInputChange={handleInputPortfolioName}
           />
           <Stack direction="row" spacing={2}>
             <Button variant="contained" onClick={handleAddPortfolio}>
