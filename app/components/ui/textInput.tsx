@@ -19,10 +19,11 @@ export const TextInput = ({
     <TextField
       fullWidth
       required={required}
-      id="standard-basic"
-      variant="standard"
+      id="outlined-basic"
+      variant="outlined"
       label={label}
       value={value}
+      size="small"
       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         onInputChange(event.target.value);
       }}

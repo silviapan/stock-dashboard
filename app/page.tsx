@@ -194,6 +194,7 @@ function PortfolioList() {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleOpenModal}
+          color="black"
         >
           Add Portfolio
         </Button>

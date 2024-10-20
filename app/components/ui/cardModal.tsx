@@ -1,5 +1,17 @@
 import React from "react";
-import { Modal, Box, Typography, Stack, Button } from "@mui/material";
+import {
+  Modal,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Box,
+  Typography,
+  Stack,
+  Button,
+  Divider,
+} from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 const boxStyle = {
   position: "absolute",
@@ -10,7 +22,7 @@ const boxStyle = {
   bgcolor: "background.paper",
   border: "1px solid #000",
   boxShadow: 24,
-  p: 4,
+  borderRadius: "8px",
 };
 
 interface CardModalProps {
@@ -35,22 +47,31 @@ export const CardModal: React.FC<CardModalProps> = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box component="form" sx={boxStyle}>
-        <Typography id="modal-modal-title" variant="h5" component="h2">
-          {cardTitle}
-        </Typography>
-        <Box pb={2}>{children}</Box>
-        <Stack direction="row" spacing={2}>
-          {handleSave && (
-            <Button variant="contained" onClick={handleSave}>
-              Save Changes
+      <Card sx={{ maxWidth: 500, ...boxStyle }}>
+        <CardHeader
+          title={cardTitle}
+          sx={{ borderBottom: `1px solid ${grey[300]}`, padding: "1rem 2rem" }}
+        />
+        <CardContent sx={{ padding: "1rem 2rem" }}>{children}</CardContent>
+        <CardActions
+          sx={{
+            justifyContent: "center",
+            backgroundColor: grey[100],
+            padding: "1.5rem 1rem",
+          }}
+        >
+          <Stack direction="row" spacing={2}>
+            {handleSave && (
+              <Button variant="contained" onClick={handleSave} color="black">
+                Save Changes
+              </Button>
+            )}
+            <Button variant="outlined" onClick={handleCloseModal} color="black">
+              Cancel
             </Button>
-          )}
-          <Button variant="outlined" onClick={handleCloseModal}>
-            Cancel
-          </Button>
-        </Stack>
-      </Box>
+          </Stack>
+        </CardActions>
+      </Card>
     </Modal>
   );
 };
