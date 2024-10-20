@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { fetchTicker, fetchStockSnapshot } from "./services/polygon-api";
-import { LabeledText } from "./components/ui/text";
 import {
   Container,
   Button,
@@ -15,77 +14,11 @@ import {
   Paper,
   InputBase,
   Divider,
-  Chip,
 } from "@mui/material";
-
+import AddIcon from "@mui/icons-material/Add";
 import { TextInput } from "./components/ui/textInput";
 import { CardModal } from "./components/ui/cardModal";
-import {
-  formatIntoCurrency,
-  formatIntoPercentDisplay,
-} from "./utils/stockDisplayUtils";
-
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-
-function Ticker({ stockData, handleRemoveTicker }) {
-  const snapshotData = stockData.snapshot;
-  const currentPrice = snapshotData.day.c;
-  const yesterdayClose = snapshotData.prevDay.c;
-  const todayChange = snapshotData.todaysChange;
-  const todayChangePercent = snapshotData.todaysChangePerc;
-
-  const todayLow = snapshotData.day.l;
-  const todayHigh = snapshotData.day.h;
-  const todayRange = `${formatIntoCurrency(todayLow)} - ${formatIntoCurrency(
-    todayHigh
-  )}`;
-
-  const todayChangePositive = todayChange >= 0;
-
-  const stockDataDisplay = [
-    { label: "Symbol", text: stockData.ticker },
-    { label: "Current Price", text: formatIntoCurrency(currentPrice) },
-    { label: "Yesterday Close", text: formatIntoCurrency(yesterdayClose) },
-    { label: "Day Range", text: todayRange },
-  ];
-
-  return (
-    <Box pb={1} pt={1}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Stack direction="row" spacing={1}>
-          <Typography>{stockData.name}</Typography>
-          <Chip
-            color={`${todayChangePositive ? "success" : "error"}`}
-            label={formatIntoPercentDisplay(todayChangePercent)}
-            size="small"
-            sx={{ borderRadius: "8px" }}
-          ></Chip>
-          <Typography color={`${todayChangePositive ? "success" : "error"}`}>
-            {formatIntoCurrency(todayChange, true)}
-          </Typography>
-        </Stack>
-        <IconButton onClick={handleRemoveTicker}>
-          <DeleteIcon />
-        </IconButton>
-      </Box>
-
-      <Grid container spacing={5}>
-        {stockDataDisplay.map((data) => (
-          <Grid size="auto">
-            <LabeledText label={data.label} text={data.text} />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
-  );
-}
+import { StockSnapshot } from "./components/stocks/stockSnapshot";
 
 function TickerList() {
   const [tickers, setTicker] = useState<string[]>([]);
@@ -93,8 +26,8 @@ function TickerList() {
   const [newTicker, setNewTicker] = useState<string>("");
   const [requestError, setRequestError] = useState<string>("");
 
-  function handleInputNewTicker(e) {
-    setNewTicker(e.target.value.toUpperCase());
+  function handleInputNewTicker(event: React.ChangeEvent<HTMLInputElement>) {
+    setNewTicker(event.target.value.toUpperCase());
     setRequestError("");
   }
 
@@ -106,40 +39,44 @@ function TickerList() {
       setRequestError(
         `Stock with ticker ${newTicker} has already been added to the portfolio.`
       );
-    } else {
-      try {
-        const [tickerDetails, stockSnapshot] = await Promise.all([
-          fetchTicker({ ticker: newTicker }),
-          fetchStockSnapshot({ ticker: newTicker }),
-        ]);
+      return;
+    }
 
-        if (tickerDetails.status === "NOT_FOUND") {
-          setRequestError(
-            `Stock with ticker '${newTicker}' can't be found. Please try searching for another stock.`
-          );
-        } else if (stockSnapshot.status === "NOT_AUTHORIZED") {
-          setRequestError(
-            `Please upgrade your plan to view stock data about ${newTicker}.`
-          );
-        }
+    try {
+      const [tickerDetails, stockSnapshot] = await Promise.all([
+        fetchTicker({ ticker: newTicker }),
+        fetchStockSnapshot({ ticker: newTicker }),
+      ]);
 
-        if (tickerDetails.results && stockSnapshot.ticker) {
-          setTicker([...tickers, newTicker]);
-          setStockData({
-            ...stockData,
-            [newTicker]: {
-              ...tickerDetails.results,
-              snapshot: stockSnapshot.ticker,
-            },
-          });
-          setNewTicker("");
-        }
-      } catch (err) {
-        console.error("Failed to fetch data", err);
+      if (tickerDetails.status === "NOT_FOUND") {
         setRequestError(
-          `There was an error getting details about ${newTicker}. Please try again.`
+          `Stock with ticker '${newTicker}' can't be found. Please try searching for another stock.`
         );
+        return;
+      } else if (stockSnapshot.status === "NOT_AUTHORIZED") {
+        setRequestError(
+          `Please upgrade your plan to view stock data about ${newTicker}.`
+        );
+        return;
       }
+
+      if (tickerDetails.results && stockSnapshot.ticker) {
+        setTicker([...tickers, newTicker]);
+        setStockData({
+          ...stockData,
+          [newTicker]: {
+            ...tickerDetails.results,
+            snapshot: stockSnapshot.ticker,
+          },
+        });
+        setNewTicker("");
+        setRequestError("");
+      }
+    } catch (err) {
+      console.error("Failed to fetch data", err);
+      setRequestError(
+        `There was an error getting details about ${newTicker}. Please try again.`
+      );
     }
   }
 
@@ -177,27 +114,31 @@ function TickerList() {
       {tickers.length > 0 &&
         tickers.map((ticker) => {
           return (
-            <>
+            <Box key={ticker}>
               <Divider />
-              <Ticker
+              <StockSnapshot
                 key={ticker}
                 stockData={stockData[ticker]}
                 handleRemoveTicker={() => handleRemoveTicker(ticker)}
               />
-            </>
+            </Box>
           );
         })}
     </Box>
   );
 }
 
-function Portfolio({ portfolio }) {
+interface PortfolioProps {
+  portfolio: string;
+}
+
+function Portfolio({ portfolio }: PortfolioProps) {
   return (
     <Paper elevation={2} sx={{ px: 3, py: 2 }}>
       <Typography variant="h6" pb={1}>
         {portfolio}
       </Typography>
-      <TickerList portfolio={portfolio} />
+      <TickerList />
     </Paper>
   );
 }
