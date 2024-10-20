@@ -1,14 +1,30 @@
+## Dashboard with Theming & Testing
+
+![Screenshot 2024-10-20 at 4 33 59 PM](https://github.com/user-attachments/assets/074d67a4-3ffa-4895-bdd5-5b6115b77341)
+
+- React (using Typescript) with Next.js
+- Testing: React Testing Library and Jest
+- API: [Polygon.io API](https://polygon.io/docs/stocks/getting-started)
+
 ## Stock Dashboard
 
 Users can create multiple portfiolos and track stocks within them. The web app is built with React (Next.js) and uses the Polygon.io API to retrieve stock data, including company details, most recent price, and previous close price.
 
+![Screenshot 2024-10-20 at 4 40 44 PM](https://github.com/user-attachments/assets/8e86b6d3-400e-4a8b-98e0-432884c7d51e)
 
 
-### Features
+## Who This Project is for
+
+This is simplified project that's intended to be used as boilerplate.
+
+- Foundation for building components with hooks, including examples light-weight UI components
+- Testing best practices, with examples of unit testing and component testing to ensure code reliability
+- Demonstration of using Material UI and creating custom theming for finer control
+- Best UX practices, including when and where to display error messaging
+
+### Product Features
 #### Create a portfolio
 Users can create one or more stock portfolios and give each a unique name. If the portfolio name has been taken users will see a message to choose another name. 
-
-<img width="900" alt="Screenshot 2024-09-20 at 4 05 02 PM" src="https://github.com/user-attachments/assets/a32f2be1-5e1a-4c41-baad-ebae84a91406">
 
 ### Add Stock
 Users can add stocks to each portfolio by entering the stock ticker symbol. When the stock is successfully added it will show:
@@ -20,24 +36,18 @@ Users can add stocks to each portfolio by entering the stock ticker symbol. When
 
 The same stock can be added to one or more portfolios.
 
-<img width="1715" alt="Screenshot 2024-09-20 at 4 14 37 PM" src="https://github.com/user-attachments/assets/9d8e152b-9744-44fd-a47a-348bfd23b031">
+![Screenshot 2024-10-20 at 5 00 37 PM](https://github.com/user-attachments/assets/833806e7-a53e-405e-b562-17638d527328)
+
 
 Users will see a message if the stock data can't be retrieved because the stock can't be found, account is missing permissions, or other general errors.
 
-![Screenshot 2024-09-20 at 4 19 52 PM](https://github.com/user-attachments/assets/10e7918b-dd5f-4875-bb6f-4918b9484fac)
-
-
-![Screenshot 2024-09-20 at 4 20 11 PM](https://github.com/user-attachments/assets/50c2741b-2bc9-4c1a-8d45-1f1674a2d2bf)
+<img width="400" src="https://github.com/user-attachments/assets/7a051fc7-6a0c-4b42-a9de-0626172b5814"> <img width="400" src="https://github.com/user-attachments/assets/db20b5b3-a591-48de-8230-fce6b68ee30d">
 
 
 ### Remove Stock
 Users can remove the stock from the portfolio. If the stock has been added to more than one portfolio, the stock will only be removed from the selected portfolio. 
 
-## Getting Started
-
-### Tech Stack
-- React (using Typescript) with Next.js
-- API: [Polygon.io API](https://polygon.io/docs/stocks/getting-started)
+## Set Up Development Environment
 
 ### Setup
 
@@ -57,19 +67,26 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Create an `.env.local` file with key `NEXT_PUBLIC_POLYGON_API_KEY`. Please add a key that has a `Starter` and above plan for the features to work correctly. Please visit [Polygon](https://polygon.io/pricing) for more information about subscription plans.
 
-## Future Features
-### Portfolio Management
-- Rename portfolio
-- Delete portfolio and all stored stocks
-- Merge portfolios
+### Run Tests
 
-### Stock Search
-- Fuzzy search for stocks
-- Filter stock search
+```bash
+# Run tests once
+npm run test
 
-### Layout
-- Reorder stocks in portfolio
-- Reorder portfolio in dashboard
+# Run tests and hot-reload when files change
+npm run test:watch
+```
+
+## Upcoming Features
+
+This project lays the foundation for React projects and I'd like to extend the project to include additional types of testing, as well create backend.
+
+### Additional testing
+- Visual regression tests to detect unwanted changes to the visual appearance of components or pages
+
+### Backend
+- Set up PostgreSQL and CRUD routes to store users' selections
+- Include examples of trigger functions
 
 
 
