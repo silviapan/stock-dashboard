@@ -7,14 +7,10 @@ import {
   Container,
   Button,
   IconButton,
-  Modal,
   Box,
   Typography,
-  TextField,
   Stack,
   Grid2 as Grid,
-  Card,
-  CardContent,
   Alert,
   Paper,
   InputBase,
@@ -33,13 +29,14 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 function Ticker({ stockData, handleRemoveTicker }) {
-  const currentPrice = stockData.snapshot.day.c;
-  const yesterdayClose = stockData.snapshot.prevDay.c;
-  const todayChange = stockData.snapshot.todaysChange;
-  const todayChangePercent = stockData.snapshot.todaysChangePerc;
+  const snapshotData = stockData.snapshot;
+  const currentPrice = snapshotData.day.c;
+  const yesterdayClose = snapshotData.prevDay.c;
+  const todayChange = snapshotData.todaysChange;
+  const todayChangePercent = snapshotData.todaysChangePerc;
 
-  const todayLow = stockData.snapshot.day.l;
-  const todayHigh = stockData.snapshot.day.h;
+  const todayLow = snapshotData.day.l;
+  const todayHigh = snapshotData.day.h;
   const todayRange = `${formatIntoCurrency(todayLow)} - ${formatIntoCurrency(
     todayHigh
   )}`;
@@ -54,22 +51,31 @@ function Ticker({ stockData, handleRemoveTicker }) {
   ];
 
   return (
-    <Box>
-      <Stack direction="row" spacing={1}>
-        <Typography>{stockData.name}</Typography>
-        <Chip
-          color={`${todayChangePositive ? "success" : "error"}`}
-          label={formatIntoPercentDisplay(todayChangePercent)}
-          size="small"
-          sx={{ borderRadius: "8px" }}
-        ></Chip>
-        <Typography color={`${todayChangePositive ? "success" : "error"}`}>
-          {formatIntoCurrency(todayChange, true)}
-        </Typography>
+    <Box pb={1} pt={1}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Stack direction="row" spacing={1}>
+          <Typography>{stockData.name}</Typography>
+          <Chip
+            color={`${todayChangePositive ? "success" : "error"}`}
+            label={formatIntoPercentDisplay(todayChangePercent)}
+            size="small"
+            sx={{ borderRadius: "8px" }}
+          ></Chip>
+          <Typography color={`${todayChangePositive ? "success" : "error"}`}>
+            {formatIntoCurrency(todayChange, true)}
+          </Typography>
+        </Stack>
         <IconButton onClick={handleRemoveTicker}>
           <DeleteIcon />
         </IconButton>
-      </Stack>
+      </Box>
+
       <Grid container spacing={5}>
         {stockDataDisplay.map((data) => (
           <Grid size="auto">
@@ -187,8 +193,10 @@ function TickerList() {
 
 function Portfolio({ portfolio }) {
   return (
-    <Paper elevation={2}>
-      <Typography variant="h6">{portfolio}</Typography>
+    <Paper elevation={2} sx={{ px: 3, py: 2 }}>
+      <Typography variant="h6" pb={1}>
+        {portfolio}
+      </Typography>
       <TickerList portfolio={portfolio} />
     </Paper>
   );
@@ -235,6 +243,7 @@ function PortfolioList() {
     <Box>
       <Stack
         direction="row"
+        pb={2}
         sx={{ justifyContent: "space-between", flexWrap: "wrap" }}
       >
         <Typography variant="h5" component="h2">
