@@ -45,6 +45,7 @@ const theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
+          backgroundColor: "#eeedeb",
           padding: "3rem",
         },
       },

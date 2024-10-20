@@ -188,8 +188,12 @@ function PortfolioList() {
     <Box>
       <Stack
         direction="row"
-        pb={2}
-        sx={{ justifyContent: "space-between", flexWrap: "wrap" }}
+        pb={3}
+        sx={{
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
       >
         <Typography variant="h5" component="h2">
           Silvia Pan's Portfolios
@@ -204,7 +208,7 @@ function PortfolioList() {
         </Button>
       </Stack>
       {portfolios && portfolios.length ? (
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {portfolios.map((portfolio) => (
             <Grid size={{ md: 12, lg: 6 }} key={portfolio}>
               <Portfolio portfolio={portfolio} />
