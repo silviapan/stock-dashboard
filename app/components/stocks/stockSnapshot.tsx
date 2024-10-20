@@ -33,13 +33,33 @@ interface StockData {
   snapshot: SnapshotData;
 }
 
-interface TickerProps {
+interface StockSnapshotProps {
   stockData: StockData;
   handleRemoveTicker: () => void;
 }
 
-export function StockSnapshot({ stockData, handleRemoveTicker }: TickerProps) {
-  const snapshotData = stockData.snapshot;
+export function StockSnapshot({
+  stockData,
+  handleRemoveTicker,
+}: StockSnapshotProps) {
+  const defaultStockData: StockData = {
+    ticker: "N/A",
+    name: "Unknown",
+    snapshot: {
+      day: { c: 0, l: 0, h: 0 },
+      prevDay: { c: 0 },
+      todaysChange: 0,
+      todaysChangePerc: 0,
+    },
+  };
+
+  let effectiveStockData = stockData;
+  const stockDataEmpty = Object.keys(stockData).length === 0;
+
+  if (!stockData || !stockData.snapshot || stockDataEmpty) {
+    effectiveStockData = defaultStockData;
+  }
+  const snapshotData = effectiveStockData.snapshot;
   const currentPrice = snapshotData.day.c;
   const yesterdayClose = snapshotData.prevDay.c;
   const todayChange = snapshotData.todaysChange;
@@ -54,7 +74,7 @@ export function StockSnapshot({ stockData, handleRemoveTicker }: TickerProps) {
   const todayChangePositive = todayChange >= 0;
 
   const stockDataDisplay = [
-    { label: "Symbol", text: stockData.ticker },
+    { label: "Symbol", text: effectiveStockData.ticker },
     { label: "Current Price", text: formatIntoCurrency(currentPrice) },
     { label: "Yesterday Close", text: formatIntoCurrency(yesterdayClose) },
     { label: "Day Range", text: todayRange },
@@ -70,7 +90,7 @@ export function StockSnapshot({ stockData, handleRemoveTicker }: TickerProps) {
         }}
       >
         <Stack direction="row" spacing={1}>
-          <Typography>{stockData.name}</Typography>
+          <Typography>{effectiveStockData.name}</Typography>
           <Chip
             color={`${todayChangePositive ? "success" : "error"}`}
             label={formatIntoPercentDisplay(todayChangePercent)}
@@ -81,14 +101,14 @@ export function StockSnapshot({ stockData, handleRemoveTicker }: TickerProps) {
             {formatIntoCurrency(todayChange, true)}
           </Typography>
         </Stack>
-        <IconButton onClick={handleRemoveTicker}>
+        <IconButton onClick={handleRemoveTicker} aria-label="delete">
           <DeleteIcon />
         </IconButton>
       </Box>
 
       <Grid container spacing={5}>
         {stockDataDisplay.map((data) => (
-          <Grid size="auto">
+          <Grid size="auto" key={data.label}>
             <LabeledText label={data.label} text={data.text} />
           </Grid>
         ))}
