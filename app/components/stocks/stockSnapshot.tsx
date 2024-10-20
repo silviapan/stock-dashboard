@@ -7,7 +7,8 @@ import {
   Grid2 as Grid,
   Chip,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { DeleteOutlineOutlined } from "@mui/icons-material";
+import { green, red } from "@mui/material/colors";
 
 import {
   formatIntoCurrency,
@@ -80,6 +81,11 @@ export function StockSnapshot({
     { label: "Day Range", text: todayRange },
   ];
 
+  const percentageChipStyle = {
+    backgroundColor: todayChangePositive ? green["A100"] : red["100"],
+    color: todayChangePositive ? green["900"] : red["900"],
+  };
+
   return (
     <Box pb={1} pt={1}>
       <Box
@@ -87,22 +93,27 @@ export function StockSnapshot({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          mb: 1,
         }}
       >
         <Stack direction="row" spacing={1}>
           <Typography>{effectiveStockData.name}</Typography>
           <Chip
-            color={`${todayChangePositive ? "success" : "error"}`}
             label={formatIntoPercentDisplay(todayChangePercent)}
             size="small"
-            sx={{ borderRadius: "8px" }}
+            sx={{
+              ...percentageChipStyle,
+              borderRadius: "8px",
+            }}
           ></Chip>
-          <Typography color={`${todayChangePositive ? "success" : "error"}`}>
+          <Typography
+            color={`${todayChangePositive ? green["400"] : red["A200"]}`}
+          >
             {formatIntoCurrency(todayChange, true)}
           </Typography>
         </Stack>
         <IconButton onClick={handleRemoveTicker} aria-label="delete">
-          <DeleteIcon />
+          <DeleteOutlineOutlined />
         </IconButton>
       </Box>
 

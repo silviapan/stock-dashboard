@@ -91,26 +91,30 @@ function TickerList() {
 
   return (
     <Box>
-      <Paper
-        component="form"
-        variant="outlined"
-        sx={{ p: "2px 4px", display: "flex", alignItems: "center" }}
-      >
-        <InputBase
-          sx={{ ml: 1, flex: 1 }}
-          placeholder="Enter Ticker Symbol"
-          value={newTicker}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            handleInputNewTicker(event);
-          }}
-        />
-        <IconButton type="button" aria-label="Add" onClick={handleAddTicker}>
-          <AddIcon />
-        </IconButton>
-      </Paper>
-      {requestError.length > 0 && (
-        <Alert severity="error">{requestError}</Alert>
-      )}
+      <Box mb={2}>
+        <Paper
+          component="form"
+          variant="outlined"
+          sx={{ display: "flex", alignItems: "center" }}
+        >
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            size="small"
+            placeholder="Enter Ticker Symbol"
+            value={newTicker}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              handleInputNewTicker(event);
+            }}
+          />
+          <IconButton type="button" aria-label="Add" onClick={handleAddTicker}>
+            <AddIcon />
+          </IconButton>
+        </Paper>
+
+        {requestError.length > 0 && (
+          <Alert severity="error">{requestError}</Alert>
+        )}
+      </Box>
       {tickers.length > 0 &&
         tickers.map((ticker) => {
           return (
