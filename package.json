@@ -1,5 +1,5 @@
 {
-  "name": "silviapan-goodship-technical",
+  "name": "silviapan-stock-dashboard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -28,8 +28,8 @@
     "@types/node": "^20",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.11",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "ts-node": "^10.9.2",
